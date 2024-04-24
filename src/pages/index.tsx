@@ -2,14 +2,14 @@ import Head from "next/head";
 // import Link from "next/link";
 import { SignInButton, UserButton, useUser} from "@clerk/nextjs";
 import { api } from "~/utils/api"
-import { type Post } from "@prisma/client";
+/* import { type Post } from "@prisma/client"; */
 /* import Image from "next/image"; */
 import { useState } from "react";
 
 
 export default function Home() {
   // const hello = api.post.hello.useQuery({ text: "from tRPC" });
-  const { data }: { data?: Post[] } = api.post.getAll.useQuery();
+  const { data } = api.post.getAll.useQuery();
   const { user } = useUser();
   const [input, setInput] = useState("");
 
@@ -67,14 +67,15 @@ export default function Home() {
               </button>
             </SignIn>} */}
               <div className="m-6">
-                {data?.map((post) => {
+                {data?.map(({post, author}) => {
                   return (
-                    <div key={post.id} className="text-white border-b-[1px] border-slate-600 py-4">
-                      {post.content} from {post.authorId}
+                    <div key={post.id} className="text-white border-b-[1px] border-slate-600 py-4">              
+                      {post.content} from  {author?.username}
                     </div>
                   );
                 
                 })}
+               
               </div>
             </div>      
      </main>

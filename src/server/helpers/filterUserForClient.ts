@@ -1,10 +1,13 @@
 
 
+
+
 export type User = {
     id: string;
     username: string;
     profileImageUrl: string;
     externalAccounts: ExternalAccount[];
+    externalUsername: string | null;
 };
 
 type ExternalAccount = {
@@ -20,4 +23,3 @@ export const filterUserForClient = (user: User) => {
         externalUsername: user.externalAccounts.find((externalAccount) => externalAccount.provider === "oauth_github")?.username ?? null
     };
 };
- 

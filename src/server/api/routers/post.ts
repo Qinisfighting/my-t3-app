@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 import { clerkClient } from "@clerk/nextjs/server";
 /* import { TRPCError } from "@trpc/server"; */
@@ -8,13 +11,29 @@ import {
 /*   privateProcedure, */
   publicProcedure,
 } from "~/server/api/trpc";
+import { filterUserForClient } from "~/server/helpers/filterUserForClient";
+
+console.log(filterUserForClient);
+
+/* export type User = {
+  id: string;
+  username: string;
+  profileImageUrl: string;
+  externalAccounts: ExternalAccount[];
+  externalUsername: string | null;
+};
+
+type ExternalAccount = {
+  provider: string;
+  username: string;
+}; */
 
 /* import { Ratelimit } from "@upstash/ratelimit"; // for deno: see above
 import { Redis } from "@upstash/redis"; */
-/* import { filterUserForClient } from "~/server/helpers/filterUserForClient";
-import type { Post } from "@prisma/client";
-import type { User } from "~/server/helpers/filterUserForClient"; */
-
+/* import { TRPCError } from "@trpc/server";
+import type { Post } from "@prisma/client"; */
+/* import { type User } from  "~/server/helpers/filterUserForClient";
+ */
 
 /* const addUserDataToPosts = async (posts: Post[]) => {
   const userId = posts.map((post) => post.authorId);
@@ -23,7 +42,7 @@ import type { User } from "~/server/helpers/filterUserForClient"; */
       userId: userId,
       limit: 110,
     })
-  ).map(filterUserForClient);
+  ).data
 
   return posts.map((post) => {
     const author = users.find((user) => user.id === post.authorId);
@@ -35,7 +54,7 @@ import type { User } from "~/server/helpers/filterUserForClient"; */
         message: `Author for post not found. POST ID: ${post.id}, USER ID: ${post.authorId}`,
       });
     }
-    if (!author.username) {
+   /*  if (!author.username) {
       // user the ExternalUsername
       if (!author.externalUsername) {
         throw new TRPCError({
@@ -44,9 +63,9 @@ import type { User } from "~/server/helpers/filterUserForClient"; */
         });
       }
       author.username = author.externalUsername;
-    }
-    return {
-      post,
+    } */
+/*     return {
+      ...post,
       author: {
         ...author,
         username: author.username ?? "(username not found)",
@@ -54,7 +73,7 @@ import type { User } from "~/server/helpers/filterUserForClient"; */
     };
   });
 };
- */
+ */ 
 
 
 export const postRouter = createTRPCRouter({
@@ -89,22 +108,34 @@ export const postRouter = createTRPCRouter({
   }),
 
   getAll: publicProcedure.query(async ({ ctx }) => {
+    
     const posts = await ctx.db.post.findMany({
       take: 100,
       orderBy: { createdAt: "desc" },
     });
-
-    const users = await clerkClient.users.getUserList({
-      userId: posts.map((post) => post.authorId) as string[],
-      limit: 100,
-    }); 
+    const userId = posts.map((post) => post.authorId);
+    const users = (
+      await clerkClient.users.getUserList({
+        userId: userId,
+        limit: 10,
+      })
+    ).data.map((user) => {
+      return {
+        id: user.id,
+        username: user.username,
+        profileImageUrl: "",
+        externalUsername: null,
+      };
+    });
 
     console.log(users);
 
-    return posts/* .map((post) => ({
-      post,
-      author: users.find((user) => user.id === post.authorId),
-    
-  })), */
+    return posts.map((post) => {
+      const author = users.find((user) => user.id === post.authorId);
+      return {
+        post,
+        author,
+      };
+    });
   }),
 });
