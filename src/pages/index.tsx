@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import Head from "next/head";
 // import Link from "next/link";
 import { SignInButton, UserButton, useUser} from "@clerk/nextjs";
@@ -5,7 +6,7 @@ import { api } from "~/utils/api"
 /* import { type Post } from "@prisma/client"; */
 /* import Image from "next/image"; */
 import { useState } from "react";
-
+import { toast } from "react-hot-toast";
 
 export default function Home() {
   // const hello = api.post.hello.useQuery({ text: "from tRPC" });
@@ -13,7 +14,25 @@ export default function Home() {
   const { user } = useUser();
   const [input, setInput] = useState("");
 
-  console.log(user)
+
+  const ctx = api.useContext();
+
+  const { mutate } = api.post.create.useMutation({
+    onSuccess: () => {
+      setInput("");
+      void ctx.post.getAll.invalidate();
+    },
+ /*    onError: (e) => {
+      const errorMessage = e.data?.zodError?.fieldErrors?.content;
+      if (errorMessage?.[0]) {
+        toast.error(errorMessage[0]);
+      } else {
+        toast.error("Failed to post! Please try again later.");
+      }
+    }, */
+  });
+
+  if (!user) return null;
 
   return (
     <>
@@ -49,14 +68,14 @@ export default function Home() {
         onChange={(e) => setInput(e.target.value)}
         autoFocus
         
-       /*  onKeyDown={(e) => {
+       onKeyDown={(e) => {
           if (e.key === "Enter") {
             e.preventDefault();
             if (input !== "") {
               mutate({ content: input });
             }
           }
-        }} */
+        }} 
        /*  disabled={isPosting} */
       />
           </div>
