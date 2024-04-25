@@ -3,6 +3,7 @@ import Head from "next/head";
 import { SignInButton, UserButton, useUser} from "@clerk/nextjs";
 import { api } from "~/utils/api"
 import { useState } from "react";
+import { toast } from "react-hot-toast";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
@@ -10,7 +11,7 @@ dayjs.extend(relativeTime);
 /* import { LoadingPage } from "~/components/loading"; */
 /* import { type Post } from "@prisma/client"; */
 /* import Image from "next/image"; */
-/* import { toast } from "react-hot-toast"; */
+
 
 
 export default function Home() {
@@ -35,14 +36,14 @@ export default function Home() {
       setInput("");
       void ctx.post.getAll.invalidate();  // invalidate the cache, the "void" is to ignore the promise which is returned and get conpmlain from typescript
     },
- /*    onError: (e) => {
+    onError: (e) => {
       const errorMessage = e.data?.zodError?.fieldErrors?.content;
       if (errorMessage?.[0]) {
         toast.error(errorMessage[0]);
       } else {
         toast.error("Failed to post! Please try again later.");
       }
-    }, */
+    },
   });
 
   if (!user) return null;
