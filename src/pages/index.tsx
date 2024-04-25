@@ -6,7 +6,11 @@ import { api } from "~/utils/api"
 /* import { type Post } from "@prisma/client"; */
 /* import Image from "next/image"; */
 import { useState } from "react";
-import { toast } from "react-hot-toast";
+/* import { toast } from "react-hot-toast"; */
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+dayjs.extend(relativeTime);
+
 
 export default function Home() {
   // const hello = api.post.hello.useQuery({ text: "from tRPC" });
@@ -68,7 +72,7 @@ export default function Home() {
         onChange={(e) => setInput(e.target.value)}
         autoFocus
         
-       onKeyDown={(e) => {
+        onKeyDown={(e) => {
           if (e.key === "Enter") {
             e.preventDefault();
             if (input !== "") {
@@ -77,21 +81,34 @@ export default function Home() {
           }
         }} 
        /*  disabled={isPosting} */
-      />
+      /> 
+        <button
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded h-10 m-6"
+        onClick={() => {
+          if (input !== "") {
+            mutate({ content: input });
+          }
+        }}
+      >
+        Submit
+      </button>
           </div>
           
           } 
           {/* {!user && 
             <SignIn path="/sign-in" routing="path" >
-              <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+              >
                 Sign in
-              </button>
+        
             </SignIn>} */}
               <div className="m-6">
                 {data?.map(({post, author}) => {
                   return (
                     <div key={post.id} className="text-white border-b-[1px] border-slate-600 py-4">              
-                      {post.content} on {new Date(post.createdAt).toLocaleDateString()} from {author?.username}
+                      {post.content} 
+                      <p className="text-sm text-slate-500">{`${dayjs(
+              post.createdAt
+            ).fromNow()}`}from <span>{author?.username}</span></p>
                     </div>
                   );
                 })}
