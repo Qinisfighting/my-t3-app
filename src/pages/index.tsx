@@ -47,6 +47,8 @@ export default function Home() {
         type="text"
         value={input}
         onChange={(e) => setInput(e.target.value)}
+        autoFocus
+        
        /*  onKeyDown={(e) => {
           if (e.key === "Enter") {
             e.preventDefault();
