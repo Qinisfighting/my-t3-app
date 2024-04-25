@@ -1,15 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import Head from "next/head";
-// import Link from "next/link";
 import { SignInButton, UserButton, useUser} from "@clerk/nextjs";
 import { api } from "~/utils/api"
-/* import { type Post } from "@prisma/client"; */
-/* import Image from "next/image"; */
 import { useState } from "react";
-/* import { toast } from "react-hot-toast"; */
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
+// import Link from "next/link";
+/* import { LoadingPage } from "~/components/loading"; */
+/* import { type Post } from "@prisma/client"; */
+/* import Image from "next/image"; */
+/* import { toast } from "react-hot-toast"; */
 
 
 export default function Home() {
@@ -17,14 +18,22 @@ export default function Home() {
   const { data } = api.post.getAll.useQuery();
   const { user } = useUser();
   const [input, setInput] = useState("");
+ /* 
+  if (postsLoading)
+    return (
+      <div className="flex grow">
+        <LoadingPage />
+      </div>
+    );
 
-
+  if (!data) return <div>Something went wrong</div>;
+ */
   const ctx = api.useContext();
 
   const { mutate } = api.post.create.useMutation({
     onSuccess: () => {
       setInput("");
-      void ctx.post.getAll.invalidate();
+      void ctx.post.getAll.invalidate();  // invalidate the cache, the "void" is to ignore the promise which is returned and get conpmlain from typescript
     },
  /*    onError: (e) => {
       const errorMessage = e.data?.zodError?.fieldErrors?.content;
@@ -69,9 +78,8 @@ export default function Home() {
         className="grow bg-transparent outline-none text-white placeholder-slate-600"
         type="text"
         value={input}
-        onChange={(e) => setInput(e.target.value)}
         autoFocus
-        
+        onChange={(e) => setInput(e.target.value)}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
             e.preventDefault();
@@ -90,7 +98,7 @@ export default function Home() {
           }
         }}
       >
-        Submit
+       Post
       </button>
           </div>
           
