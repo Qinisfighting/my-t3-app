@@ -7,7 +7,8 @@ import { toast } from "react-hot-toast";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
-// import Link from "next/link";
+import { PostView } from "~/components/postview";
+/* import Link from "next/link"; */
 /* import { LoadingPage } from "~/components/loading"; */
 /* import { type Post } from "@prisma/client"; */
 /* import Image from "next/image"; */
@@ -113,12 +114,15 @@ export default function Home() {
               <div className="m-6">
                 {data?.map(({post, author}) => {
                   return (
-                    <div key={post.id} className="text-white border-b-[1px] border-slate-600 py-4">              
+                    <PostView post={post} author={author} key={post.id} />
+                   /*  <div key={post.id} className="text-white border-b-[1px] border-slate-600 py-4">              
                       {post.content} 
-                      <p className="text-sm text-slate-500">{`${dayjs(
-              post.createdAt
-            ).fromNow()}`}from <span>{author?.username}</span></p>
-                    </div>
+                      <p className="text-sm text-slate-500">{`${dayjs(post.createdAt).fromNow()}`} from 
+                        <Link href={`/${author.username}`}>
+                            <span className="italic hover:text-slate-400"> {author?.username}</span>
+                        </Link>      
+                      </p>
+                    </div> */
                   );
                 })}
               </div>
