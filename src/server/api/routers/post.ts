@@ -12,7 +12,7 @@ import {
   publicProcedure,
 } from "~/server/api/trpc";
 import { filterUserForClient } from "~/server/helpers/filterUserForClient";
-
+/* import { type User } from  "~/server/helpers/filterUserForClient";  */
 console.log(filterUserForClient);
 
 /* export type User = {
@@ -114,6 +114,7 @@ export const postRouter = createTRPCRouter({
       orderBy: { createdAt: "desc" },
     });
     const userId = posts.map((post) => post.authorId);
+
     const users = (
       await clerkClient.users.getUserList({
         userId: userId,
@@ -134,7 +135,10 @@ export const postRouter = createTRPCRouter({
       const author = users.find((user) => user.id === post.authorId);
       return {
         post,
-        author,
+        author: {
+          ...author,
+          username: author?.username ?? "(username not found)",
+        },
       };
     });
   }),

@@ -70,12 +70,10 @@ export default function Home() {
                 {data?.map(({post, author}) => {
                   return (
                     <div key={post.id} className="text-white border-b-[1px] border-slate-600 py-4">              
-                      {post.content} from  {author?.username}
+                      {post.content} on {new Date(post.createdAt).toLocaleDateString()} from {author?.username}
                     </div>
                   );
-                
                 })}
-               
               </div>
             </div>      
      </main>
