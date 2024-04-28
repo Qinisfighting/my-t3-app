@@ -8,15 +8,32 @@ generator client {
 datasource db {
     provider = "postgresql"
     url      = env("DATABASE_URL")
-    relationMode = "prisma"
+  
    
 }
+
+// model User {
+//     id       String   @id @default(cuid())
+//     email    String   @unique
+//     name     String
+//     allPosts Post[] @relation("allPosts")
+//     favoritePosts Post[] @relation("FavoriteRelation")
+// }
+
+
 
 model Post {
     id        String  @id @default(cuid())
     createdAt DateTime @default(now())
     authorId  String
     content   String   @db.VarChar(255)
+    // author    User     @relation("allPosts", fields: [authorId], references: [id])
+    // favoritedBy User   @relation("FavoriteRelation", fields: [favoritedById], references: [id])
+    // favoritedById String
 
-     @@index([authorId])
+    @@index([authorId])
 }
+
+
+
+        
