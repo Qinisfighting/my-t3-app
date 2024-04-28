@@ -18,9 +18,25 @@ datasource db {
 //     name     String
 //     allPosts Post[] @relation("allPosts")
 //     favoritePosts Post[] @relation("FavoriteRelation")
+//     age      Int?
+//     userPreferences UserPreferences?
+//     role     Role    @default(BASIC)
 // }
 
 
+// model Category {
+//     id    String  @id @default(cuid())
+//     posts Post[] 
+//     name  String
+
+// model UserPreferences {
+//     id    String @id @default(cuid())
+//     userId String @unique
+//     user   User   @relation(fields: [userId], references: [id])
+//     theme String
+//     language String
+//     emailNotification Boolean
+// }
 
 model Post {
     id        String  @id @default(cuid())
@@ -28,11 +44,23 @@ model Post {
     authorId  String
     content   String   @db.VarChar(255)
     // author    User     @relation("allPosts", fields: [authorId], references: [id])
-    // favoritedBy User   @relation("FavoriteRelation", fields: [favoritedById], references: [id])
-    // favoritedById String
+    // favoritedBy User?   @relation("FavoriteRelation", fields: [favoritedById], references: [id])
+    // categories Category[] 
+    // updatedAt DateTime @updatedAt
+    // title     String
+    // averageRating Float?
+    
+
 
     @@index([authorId])
 }
+
+
+// enum Role {
+    //BASIC
+    //ADMIN
+    //SUPERADMIN
+// }
 
 
 
